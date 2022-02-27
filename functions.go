@@ -122,6 +122,7 @@ func WriteHoldingRegisters(s *Server, frame Framer) ([]byte, *Exception) {
 
 	if len(valueBytes)/2 != numRegs {
 		exception = &IllegalDataAddress
+		return data, exception
 	}
 
 	// Copy data to memroy

@@ -177,7 +177,7 @@ func Example() {
 	// results [0 3 0 4 0 5]
 }
 
-// Override the default ReadDiscreteInputs funtion.
+// Override the default ReadDiscreteInputs function.
 func ExampleServer_RegisterFunctionHandler() {
 	serv := NewServer()
 

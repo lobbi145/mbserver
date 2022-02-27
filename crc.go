@@ -62,9 +62,8 @@ func crcInitTable() {
 	crcTable = make([]uint16, 256)
 
 	for i := uint16(0); i < 256; i++ {
-
 		crc := uint16(0)
-		c := uint16(i)
+		c := i
 
 		for j := uint16(0); j < 8; j++ {
 			if ((crc ^ c) & 0x0001) > 0 {
