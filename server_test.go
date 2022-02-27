@@ -67,13 +67,13 @@ func TestModbus(t *testing.T) {
 	client := modbus.NewClient(handler)
 
 	// Coils
-	results, err := client.WriteMultipleCoils(100, 9, []byte{255, 1})
+	_, err = client.WriteMultipleCoils(100, 9, []byte{255, 1})
 	if err != nil {
 		t.Errorf("expected nil, got %v\n", err)
 		t.FailNow()
 	}
 
-	results, err = client.ReadCoils(100, 16)
+	results, err := client.ReadCoils(100, 16)
 	if err != nil {
 		t.Errorf("expected nil, got %v\n", err)
 		t.FailNow()
