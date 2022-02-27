@@ -50,6 +50,7 @@ func NewServer() *Server {
 	s.function[6] = WriteHoldingRegister
 	s.function[15] = WriteMultipleCoils
 	s.function[16] = WriteHoldingRegisters
+	s.function[23] = ReadWriteMultipleRegisters
 
 	s.requestChan = make(chan *Request)
 	s.portsCloseChan = make(chan struct{})

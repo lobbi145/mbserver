@@ -55,6 +55,12 @@ func ReadHoldingRegisters(s *Server, frame Framer) ([]byte, *Exception) {
 	return append([]byte{byte(numRegs * 2)}, Uint16ToBytes(s.HoldingRegisters[register:endRegister])...), &Success
 }
 
+func ReadWriteMultipleRegisters(s *Server, frame Framer) ([]byte, *Exception) {
+	data, exp := ReadHoldingRegisters(s, frame)
+	WriteHoldingRegisters(s, frame)
+	return data, exp
+}
+
 // ReadInputRegisters function 4, reads input registers from internal memory.
 func ReadInputRegisters(s *Server, frame Framer) ([]byte, *Exception) {
 	register, numRegs, endRegister := registerAddressAndNumber(frame)
