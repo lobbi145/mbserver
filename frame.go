@@ -29,6 +29,13 @@ func registerAddressAndNumber(frame Framer) (register int, numRegs int, endRegis
 	return register, numRegs, endRegister
 }
 
+func writeRegistersAddressAndNumber(frame Framer) (writeRegister, numWriteRegs int) {
+	data := frame.GetData()
+	writeRegister = int(binary.BigEndian.Uint16(data[4:6]))
+	numWriteRegs = int(binary.BigEndian.Uint16(data[6:8]))
+	return writeRegister, numWriteRegs
+}
+
 func registerAddressAndValue(frame Framer) (int, uint16) {
 	data := frame.GetData()
 	register := int(binary.BigEndian.Uint16(data[0:2]))

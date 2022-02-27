@@ -57,7 +57,13 @@ func ReadHoldingRegisters(s *Server, frame Framer) ([]byte, *Exception) {
 
 func ReadWriteMultipleRegisters(s *Server, frame Framer) ([]byte, *Exception) {
 	data, exp := ReadHoldingRegisters(s, frame)
-	WriteHoldingRegisters(s, frame)
+	if exp.String() != Success.String() {
+		return data, exp
+	}
+	register, numRegs := writeRegistersAddressAndNumber(frame)
+	valueBytes := frame.GetData()[9:]
+	successData := frame.GetData()[0:4]
+	_, exp = writeHoldingRegisters(s, valueBytes, register, numRegs, successData)
 	return data, exp
 }
 
@@ -123,25 +129,24 @@ func WriteMultipleCoils(s *Server, frame Framer) ([]byte, *Exception) {
 func WriteHoldingRegisters(s *Server, frame Framer) ([]byte, *Exception) {
 	register, numRegs, _ := registerAddressAndNumber(frame)
 	valueBytes := frame.GetData()[5:]
-	var exception *Exception
-	var data []byte
+	successData := frame.GetData()[0:4]
+	return writeHoldingRegisters(s, valueBytes, register, numRegs, successData)
+}
+
+func writeHoldingRegisters(s *Server, valueBytes []byte, register int, numRegs int, successData []byte) ([]byte, *Exception) {
 
 	if len(valueBytes)/2 != numRegs {
-		exception = &IllegalDataAddress
-		return data, exception
+		return []byte{}, &IllegalDataAddress
 	}
 
 	// Copy data to memroy
 	values := BytesToUint16(valueBytes)
 	valuesUpdated := copy(s.HoldingRegisters[register:], values)
 	if valuesUpdated == numRegs {
-		exception = &Success
-		data = frame.GetData()[0:4]
-	} else {
-		exception = &IllegalDataAddress
+		return successData, &Success
 	}
 
-	return data, exception
+	return []byte{}, &IllegalDataAddress
 }
 
 // BytesToUint16 converts a big endian array of bytes to an array of unit16s
